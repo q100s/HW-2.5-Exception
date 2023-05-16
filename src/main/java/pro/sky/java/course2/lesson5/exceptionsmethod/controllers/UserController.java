@@ -1,16 +1,17 @@
-package pro.sky.java.course2.lesson5.exceptionsmethod;
+package pro.sky.java.course2.lesson5.exceptionsmethod.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pro.sky.java.course2.lesson5.exceptionsmethod.exceptions.WrongLoginException;
 import pro.sky.java.course2.lesson5.exceptionsmethod.exceptions.WrongPasswordException;
+import pro.sky.java.course2.lesson5.exceptionsmethod.services.UserServiceImpl;
 
 @RestController
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -23,16 +24,17 @@ public class UserController {
     public String checkUser(@RequestParam("login") String login, @RequestParam("password") String password,
                             @RequestParam("confirmedPassword") String confirmedPassword) {
         try {
-            return UserService.checkUser(login, password, confirmedPassword);
+            userService.checkUser(login, password, confirmedPassword);
         } catch (WrongLoginException e) {
             e.printStackTrace();
-            return "Login is too long";
+            return e.getMessage();
         } catch (WrongPasswordException e) {
             e.printStackTrace();
-            return "Password is too long or passwords aren't equal";
+            return e.getMessage();
         } finally {
             System.out.println("Method checkUser has finished");
         }
+        return "User is OK";
     }
 }
 
